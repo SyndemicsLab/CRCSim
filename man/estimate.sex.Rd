@@ -4,7 +4,7 @@
 \alias{estimate.sex}
 \title{Draws sex from a sample}
 \usage{
-estimate.sex(sex = c("Male", "Female"), prob = c(0.583, 0.386), seed)
+estimate.sex(sex = c("Male", "Female"), prob = c(0.583, 0.386))
 }
 \arguments{
 \item{sex}{list: sexes to sample from}

@@ -6,8 +6,7 @@
 \usage{
 estimate.race(
   race = c("White", "Black", "Asian/PI", "Hispanic", "Other"),
-  prob = c(0.777, 0.0509, 0.00629, 0.0942, 0.0109),
-  seed
+  prob = c(0.777, 0.0509, 0.00629, 0.0942, 0.0109)
 )
 }
 \arguments{

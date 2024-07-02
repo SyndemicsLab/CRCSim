@@ -4,12 +4,19 @@
 \alias{simulate}
 \title{Attempts recovery of the ground truth - fundamentally a wrapper for Syndemics::crc}
 \usage{
-simulate(DT, capture, ...)
+simulate(
+  DT,
+  capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
+  group,
+  ...
+)
 }
 \arguments{
 \item{DT}{data.table from the \code{create.data} step}
 
 \item{capture}{list: strings of captures}
+
+\item{group}{stratification string to group by}
 
 \item{...}{other options, as passed to Syndemics::crc}
 }

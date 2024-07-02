@@ -8,17 +8,18 @@
 #' @returns list the same length of \code{group}
 #'
 #' @export
+
 extract.groundTruth <- function(DT,
                                 capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
                                 group){
-  if(!missing(group)) cols <- c(capture, group) else cols <- capture
 
-  DT <- DT[, tmp := rowSums(.SD), .SDcols = cols
+  DT <- DT[, tmp := rowSums(.SD), .SDcols = capture
            ][tmp == 0,
              ][, tmp := NULL]
 
-  out <- as.list(DT$N_ID)
-  if(!missing(group)) names(out) <- group else names(out) <- "base"
+  out <- as.list(DT[["N_ID"]])
+  names <- as.list(DT[[group]])
+  if(!missing(group)) names(out) <- names else names(out) <- "base"
 
   return(out)
 }

@@ -16,11 +16,10 @@ create.data <- function(n, seed, correlate = FALSE, collapse = TRUE, suppress = 
 
   stats <- list()
   for(i in 1:n){
-    race <- estimate.race(seed = seed+i)
-    sex <- estimate.sex(seed = seed+i)
-    age <- estimate.age(seed = seed+i)
-    capture <- estimate.captures(correlate = correlate,
-                                 seed = seed+i)
+    race <- estimate.race()
+    sex <- estimate.sex()
+    age <- estimate.age()
+    capture <- estimate.captures(correlate = correlate)
 
     stats[[i]] <- c(race = race, sex = sex, agegrp = age, capture)
 
@@ -45,9 +44,7 @@ create.data <- function(n, seed, correlate = FALSE, collapse = TRUE, suppress = 
 #'
 #' @keywords internal
 estimate.race <- function(race = c("White", "Black", "Asian/PI", "Hispanic", "Other"),
-                          prob = c(.777, .0509, .00629, .0942, .0109),
-                          seed){
-  set.seed(seed)
+                          prob = c(.777, .0509, .00629, .0942, .0109)){
   if(length(race) != length(prob)) stop("race and prob have different lengths")
   out <- sample(race, 1, prob, replace = FALSE)
   return(out)
@@ -61,9 +58,7 @@ estimate.race <- function(race = c("White", "Black", "Asian/PI", "Hispanic", "Ot
 #'
 #' @keywords internal
 estimate.sex <- function(sex = c("Male", "Female"),
-                         prob = c(.583, .386),
-                         seed){
-  set.seed(seed)
+                         prob = c(.583, .386)){
   if(length(sex) != length(prob)) stop("sex and prob have different lengths")
   out <- sample(sex, 1, prob, replace = FALSE)
   return(out)
@@ -79,9 +74,7 @@ estimate.sex <- function(sex = c("Male", "Female"),
 estimate.age <- function(age = 1:10,
                          prob = c(.00295, .0271, .273,
                                   .274, .194, .154, .0512,
-                                  .0129, .00568, .000681),
-                         seed){
-  set.seed(seed)
+                                  .0129, .00568, .000681)){
   if(length(age) != length(prob)) stop("age and prob have different lengths")
   out <- sample(age, 1, prob, replace = FALSE)
   return(out)
@@ -108,9 +101,7 @@ estimate.captures <- function(capture = c("APCD", "BSAS", "Casemix", "Death", "M
                                 -0.06406634, -0.06738847, -0.08669687,  1.00000000, -0.08148882, -0.04910034,
                                 -0.10679959, 0.33085861,  0.09550053, -0.08148882,  1.00000000,  0.11940396,
                                 -0.11561070, 0.05487056, -0.00245505, -0.04910034,  0.11940396,  1.00000000),
-                                ncol=6, byrow=TRUE),
-                              seed){
-  set.seed(seed)
+                                ncol=6, byrow=TRUE)){
   if(length(capture) != length(prob)) stop("capture and prob have different lengths")
   out <- list()
   if(correlate){
