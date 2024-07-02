@@ -11,7 +11,7 @@
 #' @returns a data.table
 #' @export
 
-create.data <- function(n, seed, correlate = FALSE, collapse = TRUE, groups){
+create.data <- function(n, seed, correlate = FALSE, collapse = TRUE, suppress = FALSE, groups){
   set.seed(seed)
 
   stats <- list()
