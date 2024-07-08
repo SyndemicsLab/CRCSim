@@ -18,8 +18,10 @@ extract.groundTruth <- function(DT,
              ][, tmp := NULL]
 
   out <- as.list(DT[["N_ID"]])
-  names <- as.list(DT[[group]])
-  if(!missing(groups)) names(out) <- names else names(out) <- "base"
+  if(!missing(groups)) {
+    names <- as.list(DT[[groups]])
+    names(out) <- names
+  } else names(out) <- "base"
 
   return(out)
 }

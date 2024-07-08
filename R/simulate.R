@@ -14,11 +14,11 @@ simulate <- function(DT, capture = c("APCD", "BSAS", "Casemix", "Death", "Matris
 
   if(!missing(groups)) {
     DT.list <- c()
-    n_groups <- unique(DT[[group]])
+    n_groups <- sort(unique(DT[[groups]]))
 
     for(i in seq_along(n_groups)){
-      DT.list[[i]] <- DT[get(group) == n_groups[i],
-                         ][, paste0(group) := NULL]
+      DT.list[[i]] <- DT[get(groups) == n_groups[i],
+                         ][, paste0(groups) := NULL]
     }
     out.list <- lapply(DT.list, function(x) Syndemics::crc(x, "N_ID", binary.variables = capture))
     return(out.list)

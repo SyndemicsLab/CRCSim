@@ -31,7 +31,7 @@ create.data <- function(n, seed, correlate = FALSE, collapse = TRUE, suppress = 
   if(!missing(groups)) cols <- c(cols, groups)
 
   DT <- DT[, .(N_ID = .N), by = cols]
-  if(suppress) DT <- DT[, N_ID := ifelse(N_ID %in% 1:10, -1, N_ID)]
+  if(suppress) DT <- DT[, N_ID := ifelse(N_ID %in% 1:10, NA, N_ID)]
 
   return(DT)
 }

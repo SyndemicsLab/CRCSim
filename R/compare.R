@@ -8,18 +8,31 @@
 
 compare <- function(sim, groundTruth) {
   compare.list <- c()
-  for(i in seq_along(sim)) {
-    aic <- sim[[i]]$AIC
-    est <- sim[[i]]$estimate
-    est.lci <- sim[[i]]$lower_ci
-    est.uci <- sim[[i]]$upper_ci
-    gt <- groundTruth[[i]]
-    group <- names(groundTruth)[i]
+  if(length(sim) > 1){
+    for(i in seq_along(sim)) {
+      aic <- sim[[i]]$AIC
+      est <- sim[[i]]$estimate
+      est.lci <- sim[[i]]$lower_ci
+      est.uci <- sim[[i]]$upper_ci
 
-    out.list <- list(aic = aic, estimate = est, lower_ci = est.lci, upper_ci = est.uci,
-                     ground = gt, group = group)
-    compare.list[[i]] <- out.list
+      group <- sort(names(groundTruth))[i]
+      gt <- as.integer(groundTruth[group])
+
+      out.list <- list(aic = aic, estimate = est, lower_ci = est.lci, upper_ci = est.uci,
+                       ground = gt, group = group)
+      compare.list[[i]] <- out.list
+    }
+    out <- rbindlist(compare.list)
+  } else {
+    aic <- sim$aic
+    est <- sim$estimate
+    est.lci <- sim$lower_ci
+    est.uci <- sim$upper_ci
+    group <- "base"
+    gt <- as.integer(groundTruth)
+
+    out <- list(aic = aic, estimate = est, lower_ci = est.lci, upper_ci = est.uci,
+                ground = gt, group = group)
   }
-  out <- rbindlist(compare.list)
   return(out)
 }
