@@ -2,7 +2,7 @@
 #'
 #' @param DT data.table from \code{create.data}
 #' @param capture list: strings of captures
-#' @param group list: strings of groups
+#' @param groups list: strings of groups
 #'
 #' @import data.table
 #' @returns list the same length of \code{group}
@@ -11,7 +11,7 @@
 
 extract.groundTruth <- function(DT,
                                 capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
-                                group){
+                                groups){
 
   DT <- DT[, tmp := rowSums(.SD), .SDcols = capture
            ][tmp == 0,
@@ -19,7 +19,7 @@ extract.groundTruth <- function(DT,
 
   out <- as.list(DT[["N_ID"]])
   names <- as.list(DT[[group]])
-  if(!missing(group)) names(out) <- names else names(out) <- "base"
+  if(!missing(groups)) names(out) <- names else names(out) <- "base"
 
   return(out)
 }

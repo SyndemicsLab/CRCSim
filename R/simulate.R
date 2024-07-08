@@ -3,16 +3,16 @@
 #' @importFrom Syndemics crc
 #' @param DT data.table from the \code{create.data} step
 #' @param capture list: strings of captures
-#' @param group stratification string to group by
+#' @param groups stratification string to group by
 #' @param ... other options, as passed to Syndemics::crc
 #'
 #' @export
-simulate <- function(DT, capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"), group, ...){
+simulate <- function(DT, capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"), groups, ...){
   DT <- DT[, tmp := rowSums(.SD), .SDcols = capture
            ][tmp != 0,
              ][, tmp := NULL]
 
-  if(!missing(group)) {
+  if(!missing(groups)) {
     DT.list <- c()
     n_groups <- unique(DT[[group]])
 

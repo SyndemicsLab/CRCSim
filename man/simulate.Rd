@@ -7,7 +7,7 @@
 simulate(
   DT,
   capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
-  group,
+  groups,
   ...
 )
 }
@@ -16,7 +16,7 @@ simulate(
 
 \item{capture}{list: strings of captures}
 
-\item{group}{stratification string to group by}
+\item{groups}{stratification string to group by}
 
 \item{...}{other options, as passed to Syndemics::crc}
 }

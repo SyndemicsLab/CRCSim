@@ -7,7 +7,7 @@
 extract.groundTruth(
   DT,
   capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
-  group
+  groups
 )
 }
 \arguments{
@@ -15,7 +15,7 @@ extract.groundTruth(
 
 \item{capture}{list: strings of captures}
 
-\item{group}{list: strings of groups}
+\item{groups}{list: strings of groups}
 }
 \value{
 list the same length of \code{group}
