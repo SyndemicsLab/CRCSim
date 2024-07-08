@@ -4,19 +4,10 @@
 \alias{create.data}
 \title{Data generation tool}
 \usage{
-create.data(
-  n,
-  seed,
-  correlate = FALSE,
-  collapse = TRUE,
-  suppress = FALSE,
-  groups
-)
+create.data(n, correlate = FALSE, collapse = TRUE, suppress = FALSE, groups)
 }
 \arguments{
 \item{n}{int: number of participants to simulate}
-
-\item{seed}{int: seeding}
 
 \item{correlate}{bool: attempts correlation between 'captures'}
 

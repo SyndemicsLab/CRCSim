@@ -4,7 +4,7 @@
 \alias{analyze}
 \title{Function to run the analysis}
 \usage{
-analyze(n, correlate, suppress, groups, seed = 2024)
+analyze(n, correlate, suppress, groups)
 }
 \arguments{
 \item{n}{int: total number entering the simulation}
@@ -14,8 +14,6 @@ analyze(n, correlate, suppress, groups, seed = 2024)
 \item{suppress}{bool: mimic required data suppression (N_ID in 1:10 becomes obfuscated)}
 
 \item{groups}{string: by-group to estimate}
-
-\item{seed}{int: data creation seed}
 }
 \description{
 Function to run the analysis

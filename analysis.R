@@ -19,22 +19,46 @@ result <- list()
 result <- future_lapply(1:niter, function(x) {
   sex <- CRCSim::analyze(nparticipants, FALSE, FALSE, "sex")
   race <- CRCSim::analyze(nparticipants, FALSE, FALSE, "race")
-  age <- CRCSim::analyze(nparticipants, FALSE, FALSE, "agegrp")
+  #age <- CRCSim::analyze(nparticipants, FALSE, FALSE, "agegrp")
   base <- CRCSim::analyze(nparticipants, FALSE, FALSE)
+
+  l1 <- list(sex, race, age, base)
+  l1 <- lapply(l1, function(x) {
+    DT <- x[, `:=` (corr = FALSE, obf = FALSE)]
+    return(DT)
+  })
 
   sex_obf <- CRCSim::analyze(nparticipants, FALSE, TRUE, "sex")
   race_obf <- CRCSim::analyze(nparticipants, FALSE, TRUE, "race")
-  age_obf <- CRCSim::analyze(nparticipants, FALSE, TRUE, "agegrp")
+  # age_obf <- CRCSim::analyze(nparticipants, FALSE, TRUE, "agegrp")
   base_obf <- CRCSim::analyze(nparticipants, FALSE, TRUE)
+
+  l2 <- list(sex_obf, race_obf, age_obf, base_obf)
+  l2 <- lapply(l2, function(x) {
+    DT <- x[, `:=` (corr = FALSE, obf = TRUE)]
+    return(DT)
+  })
 
   sex_corr <- CRCSim::analyze(nparticipants, TRUE, FALSE, "sex")
   race_corr <- CRCSim::analyze(nparticipants, TRUE, FALSE, "race")
-  age_corr <- CRCSim::analyze(nparticipants, TRUE, FALSE, "agegrp")
+  #age_corr <- CRCSim::analyze(nparticipants, TRUE, FALSE, "agegrp") currently erroring
   base_corr <- CRCSim::analyze(nparticipants, TRUE, FALSE)
 
+  l3 <- list(sex_corr, race_corr, age_corr, base_corr)
+  l3 <- lapply(l3, function(x) {
+    DT <- x[, `:=` (corr = TRUE, obf = FALSE)]
+    return(DT)
+  })
+
   sex_corr_obf <- CRCSim::analyze(nparticipants, TRUE, TRUE, "sex")
-  race_corr_obf <-
+  race_corr_obf <- CRCSim::analyze(nparticipants, TRUE, TRUE, "race")
+  #age_corr_obf <- CRCSim::analyze(nparticipants, TRUE, TRUE, "agegrp") currently incorrect
+  base_corr_obf <- CRCSim::analyze(nparticipants, TRUE, TRUE)
 
-
+  l4 <- list(sex_corr_obf, race_corr_obf, age_corr_obf, base_corr_obf)
+  l4 <- lapply(l4, function(x) {
+    DT <- x[, `:=` (corr = TRUE, obf = TRUE)]
+    return(DT)
+  })
+  out.list <- data.table::rbindlist(c(l1, l2, l3, l4))
 })
-

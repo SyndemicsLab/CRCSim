@@ -1,7 +1,6 @@
 #' Data generation tool
 #'
 #' @param n int: number of participants to simulate
-#' @param seed int: seeding
 #' @param correlate bool: attempts correlation between 'captures'
 #' @param collapse bool: collapse on groups given
 #' @param groups list: strings of additional cols to group on, supports "agegrp", "sex", and "race"
@@ -11,8 +10,7 @@
 #' @returns a data.table
 #' @export
 
-create.data <- function(n, seed, correlate = FALSE, collapse = TRUE, suppress = FALSE, groups){
-  set.seed(seed)
+create.data <- function(n, correlate = FALSE, collapse = TRUE, suppress = FALSE, groups){
 
   stats <- list()
   for(i in 1:n){
@@ -31,7 +29,7 @@ create.data <- function(n, seed, correlate = FALSE, collapse = TRUE, suppress = 
   if(!missing(groups)) cols <- c(cols, groups)
 
   DT <- DT[, .(N_ID = .N), by = cols]
-  if(suppress) DT <- DT[, N_ID := ifelse(N_ID %in% 1:10, NA, N_ID)]
+  if(suppress) DT <- DT[, N_ID := ifelse(N_ID %in% 1:10, sample.int(10, 1), N_ID)]
 
   return(DT)
 }

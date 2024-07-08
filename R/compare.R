@@ -8,7 +8,7 @@
 
 compare <- function(sim, groundTruth) {
   compare.list <- c()
-  if(length(sim) > 1){
+  if(length(groundTruth) > 1){
     for(i in seq_along(sim)) {
       aic <- sim[[i]]$AIC
       est <- sim[[i]]$estimate
@@ -31,7 +31,7 @@ compare <- function(sim, groundTruth) {
     group <- "base"
     gt <- as.integer(groundTruth)
 
-    out <- list(aic = aic, estimate = est, lower_ci = est.lci, upper_ci = est.uci,
+    out <- data.table(aic = aic, estimate = est, lower_ci = est.lci, upper_ci = est.uci,
                 ground = gt, group = group)
   }
   return(out)
