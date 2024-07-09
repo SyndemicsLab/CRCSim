@@ -5,10 +5,9 @@ pacman::p_load(CRCSim, data.table, doFuture, future, future.apply, doRNG, devtoo
 devtools::install_github("SyndemicsLab/Syndemics")
 
 ncores <- 2 # Number of cores to use
-nparticipants <- 1e5 # Population size to simulate
-niter <- 2 # Number of bootstraps (iterations)
-start_seed <- 2024
-set.seed(2024)
+nparticipants <- 3e5 # Population size to simulate
+niter <- 100 # Number of bootstraps (iterations)
+
 #Parallel Setup ===============================================================
 doFuture::registerDoFuture()
 doRNG::registerDoRNG()
@@ -62,4 +61,7 @@ result <- future_lapply(1:niter, function(x) {
     return(DT)
   })
   out.list <- data.table::rbindlist(c(l1, l2, l3, l4))
-}, future.seed = start_seed)
+}, future.seed = TRUE)
+
+out <- rbindlist(result, idcol = "iteration")
+write.csv(out, "results.csv", row.names = FALSE)
