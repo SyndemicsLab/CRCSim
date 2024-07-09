@@ -69,7 +69,9 @@ estimate.sex <- function(sex = c("Male", "Female"),
 #' @param seed int: seeding
 #'
 #' @keywords internal
-estimate.age <- function(age = 1:10,
+estimate.age <- function(age = c("1_10", "11_20", "21_30", "31_40",
+                                 "41_50", "51_60", "61_70", "71_80",
+                                 "81_90", "91_100"),
                          prob = c(.00295, .0271, .273,
                                   .274, .194, .154, .0512,
                                   .0129, .00568, .000681)){

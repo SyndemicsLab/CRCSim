@@ -16,7 +16,7 @@ compare <- function(sim, groundTruth) {
       est.uci <- sim[[i]]$upper_ci
 
       group <- sort(names(groundTruth))[i]
-      gt <- as.integer(groundTruth[group])
+      gt <- as.integer(groundTruth[[group]])
 
       out.list <- list(aic = aic, estimate = est, lower_ci = est.lci, upper_ci = est.uci,
                        ground = gt, group = group)
@@ -24,12 +24,12 @@ compare <- function(sim, groundTruth) {
     }
     out <- rbindlist(compare.list)
   } else {
-    aic <- sim$aic
+    aic <- sim$AIC
     est <- sim$estimate
     est.lci <- sim$lower_ci
     est.uci <- sim$upper_ci
     group <- "base"
-    gt <- as.integer(groundTruth)
+    gt <- as.integer(groundTruth[1])
 
     out <- data.table(aic = aic, estimate = est, lower_ci = est.lci, upper_ci = est.uci,
                 ground = gt, group = group)
