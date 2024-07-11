@@ -6,7 +6,7 @@ devtools::install_github("SyndemicsLab/Syndemics")
 
 ncores <- 2 # Number of cores to use
 nparticipants <- 3e5 # Population size to simulate
-niter <- 100 # Number of bootstraps (iterations)
+niter <- 2 # Number of bootstraps (iterations)
 
 #Parallel Setup ===============================================================
 doFuture::registerDoFuture()
@@ -63,5 +63,6 @@ result <- future_lapply(1:niter, function(x) {
   out.list <- data.table::rbindlist(c(l1, l2, l3, l4))
 }, future.seed = TRUE)
 
-out <- rbindlist(result, idcol = "iteration")
+out <- rbindlist(result, idcol = "iteration")[, pct_diff := (ground - estimate) / estimate * 100]
 write.csv(out, "results.csv", row.names = FALSE)
+

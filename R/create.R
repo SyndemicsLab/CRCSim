@@ -4,13 +4,12 @@
 #' @param correlate bool: attempts correlation between 'captures'
 #' @param collapse bool: collapse on groups given
 #' @param groups list: strings of additional cols to group on, supports "agegrp", "sex", and "race"
-#' @param suppress bool: mimic suppression (recode cells in 1:10 as -1)
 #'
 #' @import data.table
 #' @returns a data.table
 #' @export
 
-create.data <- function(n, correlate = FALSE, collapse = TRUE, suppress = FALSE, groups){
+create.data <- function(n, correlate = FALSE, collapse = TRUE, groups){
 
   stats <- list()
   for(i in 1:n){
@@ -29,7 +28,6 @@ create.data <- function(n, correlate = FALSE, collapse = TRUE, suppress = FALSE,
   if(!missing(groups)) cols <- c(cols, groups)
 
   DT <- DT[, .(N_ID = .N), by = cols]
-  if(suppress) DT <- DT[, N_ID := ifelse(N_ID %in% 1:10, sample.int(10, 1), N_ID)]
 
   return(DT)
 }

@@ -10,13 +10,13 @@
 
 analyze <- function(n, correlate, suppress, groups){
   if(!missing(groups)){
-    DT <- create.data(n, correlate, collapse = TRUE, suppress, groups)
+    DT <- create.data(n, correlate, collapse = TRUE, groups)
     groundTruth <- extract.groundTruth(DT, groups = groups)
-    model <- simulate(DT, groups = groups)
+    model <- simulate(DT, groups = groups, suppress = suppress)
   } else {
-    DT <- create.data(n, correlate, collapse = TRUE, suppress)
+    DT <- create.data(n, correlate, collapse = TRUE)
     groundTruth <- extract.groundTruth(DT)
-    model <- simulate(DT)
+    model <- simulate(DT, suppress = suppress)
   }
   out <- compare(model, groundTruth)
   return(out)

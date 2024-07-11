@@ -17,6 +17,7 @@ extract.groundTruth <- function(DT,
            ][tmp == 0,
              ][, tmp := NULL]
 
+
   out <- as.list(DT[["N_ID"]])
   if(!missing(groups)) {
     names <- as.list(DT[[groups]])

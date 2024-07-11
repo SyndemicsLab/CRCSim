@@ -8,7 +8,7 @@ simulate(
   DT,
   capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
   groups,
-  ...
+  suppress
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ simulate(
 
 \item{groups}{stratification string to group by}
 
-\item{...}{other options, as passed to Syndemics::crc}
+\item{suppress}{bool: recoding of values to mimic real world data suppression}
 }
 \description{
 Attempts recovery of the ground truth - fundamentally a wrapper for Syndemics::crc
