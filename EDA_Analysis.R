@@ -4,11 +4,11 @@ devtools::install_github("SyndemicsLab/Syndemics")
 nboot <- 1000
 
 doFuture::registerDoFuture()
-future::plan(multisession())
+future::plan(future::multisession(workers = 10))
 setDTthreads(1)
 doRNG::registerDoRNG()
 
-boot.lsit <- c()
+boot.list <- c()
 boot.list <- future_lapply(1:nboot, function(x) {
   race_mapping <- data.table(final_re = 1:5, race = c("white", "black", "asianpi", "hispanic", "aiother"))
   race <- fread("Raw/OUDOrigin_Race_26JUN2024.csv")[N_ID == -1, N_ID := sample(1:10, 1)
@@ -103,8 +103,12 @@ boot.list <- future_lapply(1:nboot, function(x) {
               race = race_totals,
               sex = sex_totals))
 })
+total.out <- rbindlist(lapply(1:nboot, function(x) boot.list[[x]]$total), idcol = "iteration")
+age.out <- rbindlist(lapply(1:nboot, function(x) boot.list[[x]]$age), idcol = "iteration")
+race.out <- rbindlist(lapply(1:nboot, function(x) boot.list[[x]]$race), idcol = "iteration")
+sex.out <- rbindlist(lapply(1:nboot, function(x) boot.list[[x]]$sex), idcol = "iteration")
 
-write.csv(sex_totals, "CRC_sex.csv", row.names = FALSE)
-write.csv(age_totals, "CRC_age.csv", row.names = FALSE)
-write.csv(race_totals, "CRC_race.csv", row.names = FALSE)
-write.csv(total_totals, "CRC_total.csv", row.names = FALSE)
+write.csv(total.out, "CRC_sex.csv", row.names = FALSE)
+write.csv(age.out, "CRC_age.csv", row.names = FALSE)
+write.csv(race.out, "CRC_race.csv", row.names = FALSE)
+write.csv(sex.out, "CRC_total.csv", row.names = FALSE)
