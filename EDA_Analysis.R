@@ -108,7 +108,39 @@ age.out <- rbindlist(lapply(1:nboot, function(x) boot.list[[x]]$age), idcol = "i
 race.out <- rbindlist(lapply(1:nboot, function(x) boot.list[[x]]$race), idcol = "iteration")
 sex.out <- rbindlist(lapply(1:nboot, function(x) boot.list[[x]]$sex), idcol = "iteration")
 
-write.csv(total.out, "CRC_sex.csv", row.names = FALSE)
-write.csv(age.out, "CRC_age.csv", row.names = FALSE)
-write.csv(race.out, "CRC_race.csv", row.names = FALSE)
-write.csv(sex.out, "CRC_total.csv", row.names = FALSE)
+condensed.sex <- sex.out[,  .(est = mean(estimate),
+                             lower_ci = mean(li),
+                             upper_ci = mean(ui),
+                             est_total = mean(total_est),
+                             est_lower = mean(total_li),
+                             est_upper = mean(total_ui),
+                             N_ID = mean(N_ID)), by = c("year", "sex")]
+write.csv(condensed.sex, "CRC_sex.csv", row.names = FALSE)
+
+condensed.age <- age.out[,  .(est = mean(estimate),
+                              lower_ci = mean(li),
+                              upper_ci = mean(ui),
+                              est_total = mean(total_est),
+                              est_lower = mean(total_li),
+                              est_upper = mean(total_ui),
+                              N_ID = mean(N_ID)), by = c("year", "agegrp")]
+write.csv(condensed.age, "CRC_age.csv", row.names = FALSE)
+
+condensed.race <- race.out[,  .(est = mean(estimate),
+                              lower_ci = mean(li),
+                              upper_ci = mean(ui),
+                              est_total = mean(total_est),
+                              est_lower = mean(total_li),
+                              est_upper = mean(total_ui),
+                              N_ID = mean(N_ID)), by = c("year", "race")]
+write.csv(condensed.race, "CRC_race.csv", row.names = FALSE)
+
+
+condensed.total <- total.out[,  .(est = mean(estimate),
+                                lower_ci = mean(li),
+                                upper_ci = mean(ui),
+                                est_total = mean(total_est),
+                                est_lower = mean(total_li),
+                                est_upper = mean(total_ui),
+                                N_ID = mean(N_ID)), by = c("year")]
+write.csv(condensed.total, "CRC_total.csv", row.names = FALSE)
