@@ -7,7 +7,7 @@ ggplot(sex[, sex := stringr::str_to_title(sex)], aes(x = year)) +
   geom_line(aes(y = est_total, color = "Estimated Total")) +
   facet_wrap(~sex) +
   geom_line(aes(y = N_ID, color = "Observed")) +
-  geom_ribbon(aes(ymin = est_lower, ymax = est_upper, fill = "Estimated Total"), alpha = 0.1) +
+  geom_ribbon(aes(ymin = est_lower, ymax = est_upper, fill = "Estimated Total"), alpha = 0.3) +
   theme_bw() +
   labs(x = "Year", y = "N") +
   scale_color_manual(name = "Legend", values = c("Observed" = "blue", "Estimated Total" = "darkorange")) +
@@ -22,7 +22,7 @@ ggplot(race[, race := stringr::str_to_title(race)
   geom_line(aes(y = est_total, color = "Estimated Total")) +
   facet_wrap(~race, scales = "free") +
   geom_line(aes(y = N_ID, color = "Observed")) +
-  geom_ribbon(aes(ymin = est_lower, ymax = est_upper, fill = "Estimated Total"), alpha = 0.1) +
+  geom_ribbon(aes(ymin = est_lower, ymax = est_upper, fill = "Estimated Total"), alpha = 0.3) +
   theme_bw() +
   labs(x = "Year", y = "N") +
   scale_color_manual(name = "Legend", values = c("Observed" = "blue", "Estimated Total" = "darkorange")) +
@@ -35,7 +35,7 @@ ggplot(age[, agegrp := gsub("_", "-", agegrp)], aes(x = year)) +
   geom_line(aes(y = est_total, color = "Estimated Total")) +
   facet_wrap(~agegrp, scales = "free") +
   geom_line(aes(y = N_ID, color = "Observed")) +
-  geom_ribbon(aes(ymin = est_lower, ymax = est_upper, fill = "Estimated Total"), alpha = 0.1) +
+  geom_ribbon(aes(ymin = est_lower, ymax = est_upper, fill = "Estimated Total"), alpha = 0.3) +
   theme_bw() +
   labs(x = "Year", y = "N") +
   scale_color_manual(name = "Legend", values = c("Observed" = "blue", "Estimated Total" = "darkorange")) +
