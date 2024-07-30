@@ -8,16 +8,12 @@
 #' @import data.table
 #' @export
 
-analyze <- function(n, correlate, suppress, groups){
-  if(!missing(groups)){
-    DT <- create.data(n, correlate, collapse = TRUE, groups)
-    groundTruth <- extract.groundTruth(DT, groups = groups)
-    model <- simulate(DT, groups = groups, suppress = suppress)
-  } else {
-    DT <- create.data(n, correlate, collapse = TRUE)
-    groundTruth <- extract.groundTruth(DT)
-    model <- simulate(DT, suppress = suppress)
-  }
+analyze <- function(n, n_captures = 6, n_strata, p_captures, p_strata, suppress){
+
+  DT <- create.data(n, n_captures, n_strata, p_captures, p_strata)
+  groundTruth <- extract.groundTruth(DT, capture = paste0("capture_", 1:n_captures), group = "strata")
+  model <- simulate(DT, capture = paste0("capture_", 1:n_captures), group = "strata", suppress = suppress)
+
   out <- compare(model, groundTruth)
   return(out)
 }

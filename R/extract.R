@@ -2,7 +2,7 @@
 #'
 #' @param DT data.table from \code{create.data}
 #' @param capture list: strings of captures
-#' @param groups list: strings of groups
+#' @param group character of strata column to extract on
 #'
 #' @import data.table
 #' @returns list the same length of \code{group}
@@ -11,7 +11,7 @@
 
 extract.groundTruth <- function(DT,
                                 capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
-                                groups){
+                                group){
 
   DT <- DT[, tmp := rowSums(.SD), .SDcols = capture
            ][tmp == 0,
@@ -19,8 +19,8 @@ extract.groundTruth <- function(DT,
 
 
   out <- as.list(DT[["N_ID"]])
-  if(!missing(groups)) {
-    names <- as.list(DT[[groups]])
+  if(!missing(group)) {
+    names <- as.list(DT[[group]])
     names(out) <- names
   } else names(out) <- "base"
 
