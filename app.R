@@ -2,11 +2,10 @@ library(shiny)
 library(shinythemes)
 library(data.table)
 library(ggplot2)
-devtools::install("SyndemicsLab/Syndemics")
-devtools::install()
+#devtools::install("SyndemicsLab/Syndemics")
+#devtools::install(".")
 library(CRCSim)
 library(Syndemics)
-
 
 ui <- fluidPage(
   theme = shinytheme("flatly"),
@@ -19,9 +18,8 @@ ui <- fluidPage(
     sidebarPanel(
       actionButton("sim", "Estimate"),
       numericInput("n", "Total Population Count:", min = 1, max = NA, value = 3e5),
-      numericInput("n_capture", "Total Captures: ", min = 1, max = 10, value = 6),
+      numericInput("sup", "Suppress numbers under:", min = 0, max = NA, value = 10),
       textInput("p_capture", "Capture Probabilities (comma-separated):"),
-      numericInput("n_stratif", "Total Stratifications: ", min = 1, max = 10, value = 2),
       textInput("p_stratif", "Stratification Probabilities (comma-separated):")
     ),
 
@@ -38,12 +36,13 @@ server <- function(input, output) {
 
   data <- eventReactive(input$sim, {
     n <- input$n
-    n_captures <- input$n_capture
-    n_stratif <- input$n_stratif
+    suppression <- input$sup
     p_captures <- c(as.numeric(unlist(strsplit(gsub("\\s", "", input$p_capture), ","))))
     p_stratif <- c(as.numeric(unlist(strsplit(gsub("\\s", "", input$p_stratif), ","))))
+    n_captures <- length(p_captures)
+    n_stratif <- length(p_stratif)
 
-    data <- CRCSim::analyze(n, n_captures, n_stratif, p_captures, p_stratif, suppress = TRUE)
+    data <- CRCSim::analyze(n, n_captures, n_stratif, p_captures, p_stratif, suppress = suppression)
   })
 
   output$table <- renderTable({

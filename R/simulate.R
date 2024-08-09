@@ -4,7 +4,7 @@
 #' @param DT data.table from the \code{create.data} step
 #' @param capture list: strings of captures
 #' @param group stratification string to group by
-#' @param suppress bool: recoding of values to mimic real world data suppression
+#' @param suppress numeric: maximum value to suppress at
 #'
 #' @export
 simulate <- function(DT, capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"), group, suppress){
@@ -12,7 +12,7 @@ simulate <- function(DT, capture = c("APCD", "BSAS", "Casemix", "Death", "Matris
            ][tmp != 0,
              ][, tmp := NULL]
 
-  if(suppress) DT <- DT[!N_ID %in% 1:10, ]
+  if(suppress) DT <- DT[!N_ID %in% 1:suppress, ]
 
   if(!missing(group)) {
     DT.list <- c()

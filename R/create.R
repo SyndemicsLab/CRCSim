@@ -11,7 +11,6 @@
 
 create.data <- function(n_individuals, n_captures, n_strata, p_captures, p_strata){
   out <- lapply(1:n_individuals, function(x){
-    set.seed(2024 + x)
     captures <- create.capture(n_captures, p_captures)
     strata <- create.strata(n_strata, p_strata)
     out <- data.table(t(captures), strata = strata)
