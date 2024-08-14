@@ -4,7 +4,7 @@
 \alias{create.data}
 \title{Data generation tool}
 \usage{
-create.data(n, correlate = FALSE, collapse = TRUE, suppress = FALSE, groups)
+create.data(n_individuals, n_captures, n_strata, p_captures, p_strata)
 }
 \arguments{
 \item{n}{int: number of participants to simulate}
@@ -12,8 +12,6 @@ create.data(n, correlate = FALSE, collapse = TRUE, suppress = FALSE, groups)
 \item{correlate}{bool: attempts correlation between 'captures'}
 
 \item{collapse}{bool: collapse on groups given}
-
-\item{suppress}{bool: mimic suppression (recode cells in 1:10 as -1)}
 
 \item{groups}{list: strings of additional cols to group on, supports "agegrp", "sex", and "race"}
 }

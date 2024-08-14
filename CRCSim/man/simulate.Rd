@@ -7,8 +7,11 @@
 simulate(
   DT,
   capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
-  groups,
-  suppress
+  group,
+  suppress,
+  method,
+  formula.selection,
+  opts.stepwise
 )
 }
 \arguments{
@@ -16,9 +19,15 @@ simulate(
 
 \item{capture}{list: strings of captures}
 
-\item{groups}{stratification string to group by}
+\item{group}{stratification string to group by}
 
-\item{suppress}{bool: recoding of values to mimic real world data suppression}
+\item{suppress}{numeric: maximum value to suppress at}
+
+\item{method}{string: selection for spatial capture recapture model - either "poisson" or "negbin"}
+
+\item{formula.selection}{string: selection for formula decision - either "aic", "corr", or "stepwise"}
+
+\item{opts.stepwise}{list: list containing 'direction' of 'forward' 'backward' or 'both', and 'threshold': p value threshold for stepwise selection}
 }
 \description{
 Attempts recovery of the ground truth - fundamentally a wrapper for Syndemics::crc

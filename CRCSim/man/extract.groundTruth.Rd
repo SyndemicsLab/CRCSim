@@ -7,7 +7,7 @@
 extract.groundTruth(
   DT,
   capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
-  groups
+  group
 )
 }
 \arguments{
@@ -15,7 +15,7 @@ extract.groundTruth(
 
 \item{capture}{list: strings of captures}
 
-\item{groups}{list: strings of groups}
+\item{group}{character of strata column to extract on}
 }
 \value{
 list the same length of \code{group}

@@ -10,6 +10,8 @@
 #' @param opts.stepwise list: list containing 'direction' of 'forward' 'backward' or 'both', and 'threshold': p value threshold for stepwise selection
 #'
 #' @export
+#'
+#' @importFrom Syndemics crc
 simulate <- function(DT, capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"), group, suppress,
                      method, formula.selection, opts.stepwise){
   DT <- DT[, tmp := rowSums(.SD), .SDcols = capture
