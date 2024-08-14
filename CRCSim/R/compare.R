@@ -4,7 +4,7 @@
 #' @param groundTruth list of ground truths by \code{extract.groundTruth}
 #'
 #' @import data.table
-#' @export
+#' @keywords internal
 
 compare <- function(sim, groundTruth) {
   compare.list <- c()

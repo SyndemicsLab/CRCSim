@@ -7,13 +7,15 @@
 create.data(n_individuals, n_captures, n_strata, p_captures, p_strata)
 }
 \arguments{
-\item{n}{int: number of participants to simulate}
+\item{n_individuals}{int: number of participants to simulate}
 
-\item{correlate}{bool: attempts correlation between 'captures'}
+\item{n_captures}{int: number of captures to emulate}
 
-\item{collapse}{bool: collapse on groups given}
+\item{n_strata}{int: number of stratification to emulate}
 
-\item{groups}{list: strings of additional cols to group on, supports "agegrp", "sex", and "race"}
+\item{p_captures}{list: list of capture probabilities to emulate}
+
+\item{p_strata}{list: list of extra 'stratification' probabilities to emulate}
 }
 \value{
 a data.table
@@ -21,3 +23,4 @@ a data.table
 \description{
 Data generation tool
 }
+\keyword{internal}

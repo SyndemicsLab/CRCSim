@@ -13,6 +13,9 @@
 #' @export
 
 runCRC <- function(nboot, ncores, seed = 2024){
+  Model <- NULL
+  Method <- NULL
+
   ncores <<- ncores
   evalq(
     {
@@ -41,20 +44,21 @@ runCRC <- function(nboot, ncores, seed = 2024){
     )
 
     pois <- lapply(config, function(x){
-      CRCSim::analyze(n, p_captures, p_stratif, suppress = suppression,
-                      method = "poisson", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
+      analyze(n, p_captures, p_stratif, suppress = suppression,
+              method = "poisson", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     pois_data <- rbindlist(pois, idcol = c("Model", names(pois)))
     pois_data <- pois_data[, Model := paste0(gsub("b", "Backward-", gsub("f", "Forward-", gsub("fb", "Both-", Model))))]
 
     nb <- lapply(config, function(x){
-      CRCSim::analyze(n, p_captures, p_stratif, suppress = suppression,
-                      method = "negbin", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
+      analyze(n, p_captures, p_stratif, suppress = suppression,
+              method = "negbin", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     nb_data <- rbindlist(nb, idcol = c("Model", names(nb)))
     nb_data <- nb_data[, Model := paste0(gsub("b", "Backward-", gsub("f", "Forward-", gsub("fb", "Both-", Model))))]
 
     data <- rbind(nb_data[, Method := "NB"], pois_data[, Method := "Poisson"])
+    gc()
     return(data)
   })
   out <- rbindlist(output, idcol = "Run")

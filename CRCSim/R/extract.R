@@ -7,12 +7,12 @@
 #' @import data.table
 #' @returns list the same length of \code{group}
 #'
-#' @export
+#' @keywords internal
 
 extract.groundTruth <- function(DT,
                                 capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"),
                                 group){
-
+  tmp <- NULL
   DT <- DT[, tmp := rowSums(.SD), .SDcols = capture
            ][tmp == 0,
              ][, tmp := NULL]

@@ -32,3 +32,4 @@ simulate(
 \description{
 Attempts recovery of the ground truth - fundamentally a wrapper for Syndemics::crc
 }
+\keyword{internal}
