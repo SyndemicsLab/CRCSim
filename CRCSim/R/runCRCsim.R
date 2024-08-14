@@ -31,8 +31,6 @@ runCRC <- function(nboot, ncores, seed = 2024){
     p_captures <- c(0.9, 0.2, 0.05, 0.02, 0.1, 0.4)
     p_stratif <- c(.8, .05, 0.05, 0.15, 0.01)
 
-    n_captures <- length(p_captures)
-    n_stratif <- length(p_stratif)
     config <- list(
       f0.05 = list(direction = "forward", threshold = 0.05),
       f0.1 = list(direction = "forward", threshold = 0.1),
@@ -43,14 +41,14 @@ runCRC <- function(nboot, ncores, seed = 2024){
     )
 
     pois <- lapply(config, function(x){
-      CRCSim::analyze(n, n_captures, n_stratif, p_captures, p_stratif, suppress = suppression,
+      CRCSim::analyze(n, p_captures, p_stratif, suppress = suppression,
                       method = "poisson", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     pois_data <- rbindlist(pois, idcol = c("Model", names(pois)))
     pois_data <- pois_data[, Model := paste0(gsub("b", "Backward-", gsub("f", "Forward-", gsub("fb", "Both-", Model))))]
 
     nb <- lapply(config, function(x){
-      CRCSim::analyze(n, n_captures, n_stratif, p_captures, p_stratif, suppress = suppression,
+      CRCSim::analyze(n, p_captures, p_stratif, suppress = suppression,
                       method = "negbin", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     nb_data <- rbindlist(nb, idcol = c("Model", names(nb)))
