@@ -4,14 +4,10 @@
 \alias{create.data}
 \title{Data generation tool}
 \usage{
-create.data(n_individuals, n_captures, n_strata, p_captures, p_strata)
+create.data(n_individuals, p_captures, p_strata)
 }
 \arguments{
 \item{n_individuals}{int: number of participants to simulate}
-
-\item{n_captures}{int: number of captures to emulate}
-
-\item{n_strata}{int: number of stratification to emulate}
 
 \item{p_captures}{list: list of capture probabilities to emulate}
 

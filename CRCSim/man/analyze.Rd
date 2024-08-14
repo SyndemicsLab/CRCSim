@@ -5,9 +5,7 @@
 \title{Function to run the analysis}
 \usage{
 analyze(
-  n,
-  p_captures,
-  p_strata,
+  DT,
   suppress,
   method = "poisson",
   formula.selection = "stepwise",
@@ -15,11 +13,7 @@ analyze(
 )
 }
 \arguments{
-\item{n}{int: total number entering the simulation}
-
-\item{p_captures}{list: list of capture probabilities to emulate}
-
-\item{p_strata}{list: list of extra 'stratification' probabilities to emulate}
+\item{DT}{data.table: data.table created from \code{create.data}}
 
 \item{suppress}{int: supression cap, defaults to 10}
 

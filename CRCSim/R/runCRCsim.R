@@ -43,15 +43,18 @@ runCRC <- function(nboot, ncores, seed = 2024){
       fb0.1 = list(direction = "both", threshold = 0.1)
     )
 
+    DT <- create.data(n, p_captures, p_stratif)
+    gc(); gc()
+
     pois <- lapply(config, function(x){
-      analyze(n, p_captures, p_stratif, suppress = suppression,
+      analyze(DT, suppress = suppression,
               method = "poisson", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     pois_data <- rbindlist(pois, idcol = c("Model", names(pois)))
     pois_data <- pois_data[, Model := paste0(gsub("b", "Backward-", gsub("f", "Forward-", gsub("fb", "Both-", Model))))]
 
     nb <- lapply(config, function(x){
-      analyze(n, p_captures, p_stratif, suppress = suppression,
+      analyze(DT, suppress = suppression,
               method = "negbin", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     nb_data <- rbindlist(nb, idcol = c("Model", names(nb)))

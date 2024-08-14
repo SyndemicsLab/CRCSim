@@ -1,8 +1,6 @@
 #' Data generation tool
 #'
 #' @param n_individuals int: number of participants to simulate
-#' @param n_captures int: number of captures to emulate
-#' @param n_strata int: number of stratification to emulate
 #' @param p_captures list: list of capture probabilities to emulate
 #' @param p_strata list: list of extra 'stratification' probabilities to emulate
 #'
@@ -10,7 +8,9 @@
 #' @returns a data.table
 #' @keywords internal
 
-create.data <- function(n_individuals, n_captures, n_strata, p_captures, p_strata){
+create.data <- function(n_individuals, p_captures, p_strata){
+  n_captures <- length(p_captures)
+  n_strata <- length(p_strata)
   out <- lapply(1:n_individuals, function(x){
     captures <- create.capture(n_captures, p_captures)
     strata <- create.strata(n_strata, p_strata)
