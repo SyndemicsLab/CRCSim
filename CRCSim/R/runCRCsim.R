@@ -31,8 +31,6 @@ runCRC <- function(nboot, ncores, seed = 2024){
   output <- future.apply::future_lapply(1:nboot, function(x) {
     n <- 3e5
     suppression <- 10
-    p_captures <- c(0.9, 0.2, 0.05, 0.02, 0.1, 0.4)
-    p_stratif <- c(.8, .05, 0.05, 0.15, 0.01)
 
     config <- list(
       f0.05 = list(direction = "forward", threshold = 0.05),
@@ -43,7 +41,8 @@ runCRC <- function(nboot, ncores, seed = 2024){
       fb0.1 = list(direction = "both", threshold = 0.1)
     )
 
-    DT <- create.data(n, p_captures, p_stratif)
+    DT <- create.data(n, p_captures = c(0.9, 0.2, 0.05, 0.02, 0.1, 0.4),
+                      p_strata = c(.8, .05, 0.05, 0.15, 0.01))
     gc(); gc()
 
     pois <- lapply(config, function(x){
