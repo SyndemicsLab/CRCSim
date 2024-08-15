@@ -40,9 +40,8 @@ runCRC <- function(nboot, ncores, seed = 2024){
       fb0.05 = list(direction = "both", threshold = 0.05),
       fb0.1 = list(direction = "both", threshold = 0.1)
     )
-
-    DT <- create.data(n, p_captures = c(0.9, 0.2, 0.05, 0.02, 0.1, 0.4),
-                      p_strata = c(.8, .05, 0.05, 0.15, 0.01))
+    #p_strata = c(.8, .05, 0.05, 0.15, 0.01)
+    DT <- create.data(n, p_captures = c(0.9, 0.2, 0.05, 0.02, 0.1, 0.4), p_strata = 1)
     gc(); gc()
 
     pois <- lapply(config, function(x){
