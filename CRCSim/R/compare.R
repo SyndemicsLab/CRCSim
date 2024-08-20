@@ -25,11 +25,11 @@ compare <- function(sim, groundTruth) {
     }
     out <- rbindlist(compare.list)
   } else {
-    aic <- sim$AIC
-    est <- sim$estimate
-    est.lci <- sim$lower_ci
-    est.uci <- sim$upper_ci
-    form <- sim$formula
+    aic <- sim[[1]]$AIC
+    est <- sim[[1]]$estimate
+    est.lci <- sim[[1]]$lower_ci
+    est.uci <- sim[[1]]$upper_ci
+    form <- sim[[1]]$formula
     group <- "base"
     gt <- as.integer(groundTruth[1])
 
