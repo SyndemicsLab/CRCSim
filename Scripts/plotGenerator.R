@@ -28,7 +28,8 @@ makeFig <- function(data) {
     theme_bw() + 
     facet_grid(Method~Model) + 
     plabs + 
-    pticks
+    pticks + 
+    labs(y = "Estimate\nGround Truth (Red)")
   
   return(p)
 }
