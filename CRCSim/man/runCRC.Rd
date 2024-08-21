@@ -4,12 +4,16 @@
 \alias{runCRC}
 \title{Function to run CRC sim - returns a list of data.tables resulting from \code{analyze}}
 \usage{
-runCRC(nboot, ncores, seed = 2024)
+runCRC(nboot, ncores, p_captures, p_strata, seed = 2024)
 }
 \arguments{
 \item{nboot}{int: number of bootstraps}
 
 \item{ncores}{int: number of cores to use}
+
+\item{p_captures}{list: list of capture probabilities}
+
+\item{p_strata}{list: list of strata probabilities - for nonstratified just use '1'}
 
 \item{seed}{int: starting seed}
 }

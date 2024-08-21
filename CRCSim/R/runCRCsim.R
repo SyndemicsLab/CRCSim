@@ -2,6 +2,8 @@
 #'
 #' @param nboot int: number of bootstraps
 #' @param ncores int: number of cores to use
+#' @param p_captures list: list of capture probabilities
+#' @param p_strata list: list of strata probabilities - for nonstratified just use '1'
 #' @param seed int: starting seed
 #'
 #' @importFrom doFuture registerDoFuture
@@ -12,7 +14,7 @@
 #'
 #' @export
 
-runCRC <- function(nboot, ncores, seed = 2024){
+runCRC <- function(nboot, ncores, p_captures, p_strata, seed = 2024){
   Model <- NULL
   Method <- NULL
 
@@ -40,8 +42,8 @@ runCRC <- function(nboot, ncores, seed = 2024){
       fb0.05 = list(direction = "both", threshold = 0.05),
       fb0.1 = list(direction = "both", threshold = 0.1)
     )
-    #p_strata = c(.8, .05, 0.05, 0.15, 0.01)
-    DT <- create.data(n, p_captures = c(0.9, 0.2, 0.05, 0.02, 0.1, 0.4), p_strata = 1)
+
+    DT <- create.data(n, p_captures, p_strata)
     gc(); gc()
 
     pois <- lapply(config, function(x){
