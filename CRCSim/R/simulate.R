@@ -9,11 +9,13 @@
 #' @param formula.selection string: selection for formula decision - either "aic", "corr", or "stepwise"
 #' @param opts.stepwise list: list containing 'direction' of 'forward' 'backward' or 'both', and 'threshold': p value threshold for stepwise selection
 #'
-#' @export
-#'
 #' @importFrom Syndemics crc
+#' @keywords internal
 simulate <- function(DT, capture = c("APCD", "BSAS", "Casemix", "Death", "Matris", "PMP"), group, suppress,
                      method, formula.selection, opts.stepwise){
+  N_ID <- NULL
+  tmp <- NULL
+
   DT <- DT[, tmp := rowSums(.SD), .SDcols = capture
            ][tmp != 0,
              ][, tmp := NULL]

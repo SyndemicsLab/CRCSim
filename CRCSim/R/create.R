@@ -1,15 +1,16 @@
 #' Data generation tool
 #'
-#' @param n int: number of participants to simulate
-#' @param correlate bool: attempts correlation between 'captures'
-#' @param collapse bool: collapse on groups given
-#' @param groups list: strings of additional cols to group on, supports "agegrp", "sex", and "race"
+#' @param n_individuals int: number of participants to simulate
+#' @param p_captures list: list of capture probabilities to emulate
+#' @param p_strata list: list of extra 'stratification' probabilities to emulate
 #'
 #' @import data.table
 #' @returns a data.table
-#' @export
+#' @keywords internal
 
-create.data <- function(n_individuals, n_captures, n_strata, p_captures, p_strata){
+create.data <- function(n_individuals, p_captures, p_strata){
+  n_captures <- length(p_captures)
+  n_strata <- length(p_strata)
   out <- lapply(1:n_individuals, function(x){
     captures <- create.capture(n_captures, p_captures)
     strata <- create.strata(n_strata, p_strata)

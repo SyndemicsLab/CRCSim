@@ -2,6 +2,8 @@
 #'
 #' @param nboot int: number of bootstraps
 #' @param ncores int: number of cores to use
+#' @param p_captures list: list of capture probabilities
+#' @param p_strata list: list of strata probabilities - for nonstratified just use '1'
 #' @param seed int: starting seed
 #'
 #' @importFrom doFuture registerDoFuture
@@ -12,7 +14,10 @@
 #'
 #' @export
 
-runCRC <- function(nboot, ncores, seed = 2024){
+runCRC <- function(nboot, ncores, p_captures, p_strata, seed = 2024){
+  Model <- NULL
+  Method <- NULL
+
   ncores <<- ncores
   evalq(
     {
@@ -28,8 +33,6 @@ runCRC <- function(nboot, ncores, seed = 2024){
   output <- future.apply::future_lapply(1:nboot, function(x) {
     n <- 3e5
     suppression <- 10
-    p_captures <- c(0.9, 0.2, 0.05, 0.02, 0.1, 0.4)
-    p_stratif <- c(.8, .05, 0.05, 0.15, 0.01)
 
     config <- list(
       f0.05 = list(direction = "forward", threshold = 0.05),
@@ -40,21 +43,25 @@ runCRC <- function(nboot, ncores, seed = 2024){
       fb0.1 = list(direction = "both", threshold = 0.1)
     )
 
+    DT <- create.data(n, p_captures, p_strata)
+    gc(); gc()
+
     pois <- lapply(config, function(x){
-      CRCSim::analyze(n, p_captures, p_stratif, suppress = suppression,
-                      method = "poisson", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
+      analyze(DT, suppress = suppression,
+              method = "poisson", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     pois_data <- rbindlist(pois, idcol = c("Model", names(pois)))
     pois_data <- pois_data[, Model := paste0(gsub("b", "Backward-", gsub("f", "Forward-", gsub("fb", "Both-", Model))))]
 
     nb <- lapply(config, function(x){
-      CRCSim::analyze(n, p_captures, p_stratif, suppress = suppression,
-                      method = "negbin", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
+      analyze(DT, suppress = suppression,
+              method = "negbin", formula.selection = "stepwise", opts.stepwise = c(x, verbose = FALSE))
     })
     nb_data <- rbindlist(nb, idcol = c("Model", names(nb)))
     nb_data <- nb_data[, Model := paste0(gsub("b", "Backward-", gsub("f", "Forward-", gsub("fb", "Both-", Model))))]
 
     data <- rbind(nb_data[, Method := "NB"], pois_data[, Method := "Poisson"])
+    gc()
     return(data)
   })
   out <- rbindlist(output, idcol = "Run")

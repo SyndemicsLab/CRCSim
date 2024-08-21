@@ -14,3 +14,4 @@ compare(sim, groundTruth)
 \description{
 Function to compare between simulation results and ground truth
 }
+\keyword{internal}

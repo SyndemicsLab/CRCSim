@@ -23,3 +23,4 @@ list the same length of \code{group}
 \description{
 Function to extract the ground truth from data created through the \code{create.data} method
 }
+\keyword{internal}

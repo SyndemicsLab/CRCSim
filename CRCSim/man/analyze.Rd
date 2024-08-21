@@ -5,11 +5,7 @@
 \title{Function to run the analysis}
 \usage{
 analyze(
-  n,
-  n_captures = 6,
-  n_strata,
-  p_captures,
-  p_strata,
+  DT,
   suppress,
   method = "poisson",
   formula.selection = "stepwise",
@@ -17,19 +13,17 @@ analyze(
 )
 }
 \arguments{
-\item{n}{int: total number entering the simulation}
+\item{DT}{data.table: data.table created from \code{create.data}}
 
-\item{suppress}{bool: mimic required data suppression (N_ID in 1:10 becomes obfuscated)}
+\item{suppress}{int: supression cap, defaults to 10}
+
+\item{method}{string: selection for spatial capture recapture model - either "poisson" or "negbin"}
 
 \item{formula.selection}{string: selection for formula decision - either "aic", "corr", or "stepwise"}
 
 \item{opts.stepwise}{list: list containing 'direction' of 'forward' 'backward' or 'both', and 'threshold': p value threshold for stepwise selection}
-
-\item{correlate}{bool: attempts to correlate captures (default is analagous to MA PHD data)}
-
-\item{groups}{string: by-group to estimate
-#' @param method string: selection for spatial capture recapture model - either "poisson" or "negbin"}
 }
 \description{
 Function to run the analysis
 }
+\keyword{internal}
