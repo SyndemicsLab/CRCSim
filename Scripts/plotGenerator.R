@@ -8,7 +8,7 @@ UECNS <- fread("../Data/unevencaptures_noStrata.csv")
 
 makeFig <- function(data) {
   if(length(unique(data$Group)) != 1) stratified <- TRUE else stratified <- FALSE
-  DT <- data[, mgt := mean(GroundTruth), by = c("Group", "Method", "Model")]
+  DT <- data[, diff := Estimate - GroundTruth]
   
   if(!stratified) {
     plabs <- labs(x = "")
@@ -20,16 +20,15 @@ makeFig <- function(data) {
   }
   
   
-  p <- ggplot(DT, aes(y = Estimate, x = Group, group = Group)) + 
+  p <- ggplot(DT, aes(y = diff, x = Group, group = Group)) + 
     geom_boxplot() + 
-    geom_point(aes(y = mgt, color = "red")) + 
     guides(color = "none",
            size = "none") + 
     theme_bw() + 
     facet_grid(Method~Model) + 
     plabs + 
     pticks + 
-    labs(y = "Estimate\nGround Truth (Red)")
+    labs(y = "Estimate and Ground Truth\nDifference")
   
   return(p)
 }
