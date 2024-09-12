@@ -58,7 +58,10 @@ ggplot(pct, aes(x = Group, y = pct, group = Group)) +
   theme_bw() + 
   facet_grid(Model~Method) + 
   labs(y = "Percent Difference in\nEstimate Against Ground Truth",
-       x = "Ground Truth Population")
+       x = "Ground Truth Population") +
+  theme(axis.text = element_text(size = 15),
+        axis.title = element_text(size = 22),
+        strip.text = element_text(size = 15))
 
 ggsave("test.png", width = 8, height = 16)
 
