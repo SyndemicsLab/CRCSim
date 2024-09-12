@@ -8,7 +8,7 @@ UECNS <- fread("../Data/unevencaptures_noStrata.csv")
 
 makeFig <- function(data) {
   if(length(unique(data$Group)) != 1) stratified <- TRUE else stratified <- FALSE
-  DT <- data[, mgt := mean(GroundTruth), by = c("Group", "Method", "Model")]
+  DT <- data[, diff := Estimate - GroundTruth]
   
   if(!stratified) {
     plabs <- labs(x = "")
@@ -20,16 +20,15 @@ makeFig <- function(data) {
   }
   
   
-  p <- ggplot(DT, aes(y = Estimate, x = Group, group = Group)) + 
+  p <- ggplot(DT, aes(y = diff, x = Group, group = Group)) + 
     geom_boxplot() + 
-    geom_point(aes(y = mgt, color = "red")) + 
     guides(color = "none",
            size = "none") + 
     theme_bw() + 
-    facet_grid(Method~Model) + 
+    facet_grid(Model~Method) + 
     plabs + 
     pticks + 
-    labs(y = "Estimate\nGround Truth (Red)")
+    labs(y = "Estimate and Ground Truth\nDifference")
   
   return(p)
 }
@@ -44,8 +43,26 @@ ggsave("../Figures/evenCaptures_noStrata.png")
 
 makeFig(UECS) + labs(title = "Uneven Capture Probabilities",
                      subtitle = "By-group Estimation")
-ggsave("../Figures/unevenCptures_strata.png")
+ggsave("../Figures/unevenCptures_strata.png", width = 6, height = 16)
 
 makeFig(ECS) + labs(title = "Even Capture Probabilities",
                     subtitle = "Total Population Estimate")
 ggsave("../Figures/evenCptures_strata.png")
+
+
+avgnobs <- copy(UECS)[, .(gt = mean(GroundTruth)), by = c("Group")]
+pct <- copy(UECS)[, pct := (Estimate - GroundTruth)/GroundTruth*100
+                  ][, Group := factor(Group, labels = round(avgnobs$gt[order(avgnobs$gt, decreasing = TRUE)]), levels = c(1, 4, 2, 3, 5), ordered = TRUE)]
+ggplot(pct, aes(x = Group, y = pct, group = Group)) + 
+  geom_boxplot() + 
+  theme_bw() + 
+  facet_grid(Model~Method) + 
+  labs(y = "Percent Difference in\nEstimate Against Ground Truth",
+       x = "Ground Truth Population") +
+  theme(axis.text = element_text(size = 15),
+        axis.title = element_text(size = 22),
+        strip.text = element_text(size = 15))
+
+ggsave("test.png", width = 8, height = 16)
+
+
