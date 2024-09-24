@@ -1,5 +1,6 @@
 library(CRCSim)
 library(Syndemics)
+library(data.table)
 
 set.seed(2024)
 nboot <- 1e3
@@ -19,7 +20,7 @@ config <- list(
   fb0.05 = list(direction = "both", threshold = 0.05),
   fb0.1 = list(direction = "both", threshold = 0.1)
 )
-groups <- unique(DT$strata)
+groups <- unique(data$strata)
 boot.out <- c()
 
 for(i in 1:nboot){
@@ -60,7 +61,7 @@ for(i in 1:nboot){
     output <- data.table(gt = ground_truth$N_ID,
                          group = groups,
                          estimates = unlist(lapply(out.list, function(x) return(x$estimate))),
-                         model = rep("poisson", length(groups)),
+                         model = rep("NB", length(groups)),
                          direction = rep(x$direction, length(groups)),
                          threshold = rep(x$threshold, length(groups)))
     return(output)
@@ -68,3 +69,14 @@ for(i in 1:nboot){
   
   boot.out[[i]] <- rbind(pois, nb)
 }
+final <- rbindlist(unlist(boot.out, recursive = FALSE))
+write.csv(final, "../Data/PHDEmulation.csv", row.names = FALSE)
+
+plot_data <- copy(final)[, pct_diff := (estimates - gt) / gt * 100
+                         ][, model := ifelse(model == "poisson", "Poisson", "NB")
+                           ][, params := paste0(stringr::str_to_title(direction), "-", threshold)]
+library(ggplot2)
+ggplot(plot_data, aes(x = group, y = pct_diff, group = as.factor(group))) + 
+  geom_boxplot() + 
+  facet_grid(model~params)
+
