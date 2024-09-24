@@ -72,11 +72,21 @@ for(i in 1:nboot){
 final <- rbindlist(unlist(boot.out, recursive = FALSE))
 write.csv(final, "../Data/PHDEmulation.csv", row.names = FALSE)
 
+final <- fread("../Data/PHDEmulation.csv")
+
+ground_truth <- setorderv(ground_truth, "N_ID", order = 1L)
 plot_data <- copy(final)[, pct_diff := (estimates - gt) / gt * 100
                          ][, model := ifelse(model == "poisson", "Poisson", "NB")
-                           ][, params := paste0(stringr::str_to_title(direction), "-", threshold)]
+                           ][, params := paste0(stringr::str_to_title(direction), "-", threshold)
+                             ][, group := factor(group, levels = ground_truth$strata, labels = ground_truth$N_ID)]
 library(ggplot2)
-ggplot(plot_data, aes(x = group, y = pct_diff, group = as.factor(group))) + 
+ggplot(plot_data, aes(x = group, y = pct_diff, group = group)) + 
+  geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
   geom_boxplot() + 
-  facet_grid(model~params)
-
+  facet_grid(params~model) + 
+  labs(x = "Ground Truth Population",
+       y = "Percent Difference in\nEstimate from Ground Truth",
+       title = "Single Dataset Bootstrapping",
+       subtitle = "Boostrapped Suppression Values ") +
+  theme_bw()
+ggsave("../Figures/PHDEmulation.png", width = 8, height = 16)
