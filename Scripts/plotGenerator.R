@@ -21,6 +21,7 @@ makeFig <- function(data) {
   
   
   p <- ggplot(DT, aes(y = diff, x = Group, group = Group)) + 
+    geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
     geom_boxplot() + 
     guides(color = "none",
            size = "none") + 
@@ -52,17 +53,20 @@ ggsave("../Figures/evenCptures_strata.png")
 
 avgnobs <- copy(UECS)[, .(gt = mean(GroundTruth)), by = c("Group")]
 pct <- copy(UECS)[, pct := (Estimate - GroundTruth)/GroundTruth*100
-                  ][, Group := factor(Group, labels = round(avgnobs$gt[order(avgnobs$gt, decreasing = TRUE)]), levels = c(1, 4, 2, 3, 5), ordered = TRUE)]
-ggplot(pct, aes(x = Group, y = pct, group = Group)) + 
+                  ][, Group := factor(Group, labels = round(avgnobs$gt[order(avgnobs$gt, decreasing = FALSE)]), levels = c(5, 3, 2, 4, 1), ordered = TRUE)]
+ggplot(pct[!Model %like% "Both"], aes(x = Group, y = pct, group = Group)) + 
+  geom_hline(yintercept = 0, col = "red", linetype = "dashed") + 
   geom_boxplot() + 
   theme_bw() + 
   facet_grid(Model~Method) + 
   labs(y = "Percent Difference in\nEstimate Against Ground Truth",
-       x = "Ground Truth Population") +
+       x = "Ground Truth Population",
+       title = "Capture-Recapture Over Multiple Datasets",
+       subtitle = "Stratified over 5 groups") +
   theme(axis.text = element_text(size = 15),
         axis.title = element_text(size = 22),
         strip.text = element_text(size = 15))
 
-ggsave("test.png", width = 8, height = 16)
+ggsave("test.png", width = 8, height = 8)
 
 

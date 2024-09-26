@@ -80,7 +80,7 @@ plot_data <- copy(final)[, pct_diff := (estimates - gt) / gt * 100
                            ][, params := paste0(stringr::str_to_title(direction), "-", threshold)
                              ][, group := factor(group, levels = ground_truth$strata, labels = ground_truth$N_ID)]
 library(ggplot2)
-ggplot(plot_data, aes(x = group, y = pct_diff, group = group)) + 
+ggplot(plot_data[!direction %like% "both"], aes(x = group, y = pct_diff, group = group)) + 
   geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
   geom_boxplot() + 
   facet_grid(params~model) + 
@@ -88,5 +88,8 @@ ggplot(plot_data, aes(x = group, y = pct_diff, group = group)) +
        y = "Percent Difference in\nEstimate from Ground Truth",
        title = "Single Dataset Bootstrapping",
        subtitle = "Boostrapped Suppression Values ") +
-  theme_bw()
-ggsave("../Figures/PHDEmulation.png", width = 8, height = 16)
+  theme_bw() +
+  theme(axis.text = element_text(size = 15),
+        axis.title = element_text(size = 22),
+        strip.text = element_text(size = 15))
+ggsave("../Figures/PHDEmulation.png", width = 8, height = 8)
