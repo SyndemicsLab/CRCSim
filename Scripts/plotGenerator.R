@@ -62,7 +62,7 @@ ggplot(pct[!Model %like% "Both"], aes(x = Group, y = pct, group = Group)) +
   labs(y = "Percent Difference in\nEstimate Against Ground Truth",
        x = "Ground Truth Population",
        title = "Capture-Recapture Over Multiple Datasets",
-       subtitle = "Stratified over 5 groups") +
+       subtitle = "Stratified over 5 groups of varying sizes") +
   theme(axis.text = element_text(size = 15),
         axis.title = element_text(size = 22),
         strip.text = element_text(size = 15))
