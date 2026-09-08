@@ -4,7 +4,7 @@
 # Created Date: 2026-08-17                                                     #
 # Author: Matthew Carroll                                                      #
 # -----                                                                        #
-# Last Modified: 2026-08-31                                                    #
+# Last Modified: 2026-09-08                                                    #
 # Modified By: Matthew Carroll                                                 #
 # -----                                                                        #
 # Copyright (c) 2026 Syndemics Lab at Boston Medical Center                    #
@@ -24,6 +24,7 @@ simulate <- function(
     n_individuals,
     n_covariates,
     captures,
+    link_function = "logit",
     cov_func = covariate_conditions
 ) {
     cov_cols <- paste0("covariate_", seq_len(n_covariates))
@@ -41,6 +42,20 @@ simulate <- function(
     known_pop_size <- nrow(sim_data)
     unknown_pop_size <- n_individuals - known_pop_size
 
+    # internal_estimates <- drpop::popsize(
+    #     sim_data,
+    #     K = length(captures),
+    #     funcname = "logit",
+    #     nfolds = 2,
+    #     margin = 0.005
+    # )$result |>
+    #     group_by(method) |>
+    #     summarise(
+    #         estimate = mean(n),
+    #         lower_ci = min(cin.l),
+    #         upper_ci = max(cin.u)
+    #     )
+
     internal_estimates <- lapply(
         c("plugin", "doubly_robust", "tmle"),
         function(method) {
@@ -48,7 +63,7 @@ simulate <- function(
                 data = sim_data,
                 n_lists = length(captures),
                 method = method,
-                func = "logit",
+                func = link_function,
                 nfolds = 2,
                 margin = 0.005,
                 seed = 1
@@ -56,8 +71,7 @@ simulate <- function(
             return(estimate)
         }
     )
-
-    internal_df <- bind_rows(internal_estimates) |>
+    internal_estimates <- bind_rows(internal_estimates) |>
         mutate(
             method = rep(
                 c("PI", "DR", "TMLE"),
@@ -69,7 +83,9 @@ simulate <- function(
         select(method, n, lower_ci, upper_ci) |>
         rename(
             estimate = n
-        ) |>
+        )
+
+    internal_df <- internal_estimates |>
         mutate(
             estimate = ((estimate - n_individuals) / n_individuals) * 100,
             lower_ci = ((lower_ci - n_individuals) / n_individuals) * 100,

@@ -25,8 +25,8 @@ flowchart LR
 
 ```{r}
 devtools::load_all("crcsim")
-library(dplyr)
-library(purrr)
+library(dplyr, warn.conflicts = FALSE)
+library(purrr, warn.conflicts = FALSE)
 ```
 
 # Setup
@@ -58,10 +58,10 @@ To shift the overall capture probabilities, we can adjust the intercept of the l
 n_covariates <- 4
 
 # range from -2 to 2 (incr. by 0.4)
-intercept <- 2.0
+intercept <- 1.0
 
 # change regression coefficients to -1.5 and 1.5
-regression_coef <- 1.5
+regression_coef <- 0.2
 
 log_regress_covariates <- function(data_table) {
     z1_values <- data_table[["covariate_1"]]
@@ -80,6 +80,55 @@ log_regress_covariates <- function(data_table) {
     capture_prob <- v / (1 + v)
     return(capture_prob)
 }
+```
+
+# Visualize Data
+
+```{r}
+# Copy the same procedure for creating inputs
+cov_cols <- paste0("covariate_", seq_len(n_covariates))
+sim_data <- build_covariate_data(n_individuals, n_covariates) |>
+    captures_from_covariates(length(captures), log_regress_covariates) |>
+    relocate_covariates(cov_cols) |>
+    all_int_cols_to_numeric() |>
+    extract_captured_data(captures)
+
+no_cov_sim_data <- sim_data |>
+    select(-starts_with("covariate_")) |>
+    build_contingency_table() |>
+    suppress_data(10)
+
+# Plot correlations
+
+library(ggcorrplot)
+cor_df <- cor(no_cov_sim_data)
+ggcorrplot(cor_df, method = "circle", type = "lower", lab = TRUE)
+```
+
+
+# Run just CRC with our implementation of DR/TMLE
+
+```{r}
+cov_cols <- paste0("covariate_", seq_len(n_covariates))
+sim_data <- build_covariate_data(n_individuals, n_covariates) |>
+    captures_from_covariates(length(captures), log_regress_covariates) |>
+    relocate_covariates(cov_cols) |>
+    all_int_cols_to_numeric() |>
+    extract_captured_data(captures)
+
+estimator <- EstimatorOptions$new(
+    method = "plugin",
+    capture_columns = captures,
+    threshold = 0.005,
+    nuisance_function = "logit",
+    nfolds = 2
+)
+res_0 <- crc(
+    model_data = sim_data,
+    opts = estimator,
+    seed = 1234,
+    diagnostics = "verbose"
+)
 ```
 
 # Run the Simulation

@@ -4,7 +4,7 @@
 # Created Date: 2026-08-26                                                     #
 # Author: Matthew Carroll                                                      #
 # -----                                                                        #
-# Last Modified: 2026-08-28                                                    #
+# Last Modified: 2026-09-03                                                    #
 # Modified By: Matthew Carroll                                                 #
 # -----                                                                        #
 # Copyright (c) 2026 Syndemics Lab at Boston Medical Center                    #
@@ -20,6 +20,8 @@
 #' @param nfolds The number of cross-validation folds (default is 5).
 #' @param margin The margin parameter for estimation (default is 0.005).
 #' @param seed The random seed for reproducibility (default is NULL).
+#' @param diagnostics Controls GLM fit diagnostics: "quiet" (default),
+#' "warning", or "verbose".
 #' @param ... Additional arguments passed to the nuisance estimation function.
 #' @return A list containing the estimation results and the total population
 #' size.
@@ -33,10 +35,12 @@ estimate_capture_prob <- function(
     nfolds = 5,
     margin = 0.005,
     seed = NULL,
+    diagnostics = "quiet",
     ...
 ) {
     # validate format first: check column names/order and no NA values
     stopifnot(validate_binary_cols(data, n_lists))
+    diagnostics <- match.arg(diagnostics, c("quiet", "warning", "verbose"))
 
     n_covariates <- ncol(data) - n_lists
     n_obs <- nrow(data)
@@ -64,7 +68,8 @@ estimate_capture_prob <- function(
         func,
         nfolds,
         margin,
-        seed
+        seed,
+        diagnostics
     ))
 }
 
@@ -105,8 +110,7 @@ estimate_no_covariates <- function(data, n_lists) {
             ),
             psi_inv = pmax(q1 * q2 / q12, 1),
             sigma = sqrt(
-                q1 * q2 * pmax(q1 * q2 - q12, 0) *
-                    (1 - q12) / q12^3 / n_obs
+                q1 * q2 * pmax(q1 * q2 - q12, 0) * (1 - q12) / q12^3 / n_obs
             )
         ) |>
         select(listpair, psi_inv, sigma) |>
@@ -114,25 +118,24 @@ estimate_no_covariates <- function(data, n_lists) {
             sigma = sqrt(n_obs) * sigma,
             n = round(n_obs * psi_inv),
             sigma_n = sqrt(
-                n_obs^2 * sigma^2 +
-                    n_obs * psi_inv * (psi_inv - 1)
+                n_obs^2 * sigma^2 + n_obs * psi_inv * (psi_inv - 1)
             ),
             ci_l = round(pmax(
                 n_obs *
                     psi_inv -
-                    1.96 * sqrt(
-                        n_obs^2 * sigma^2 +
-                            n_obs * psi_inv * (psi_inv - 1)
-                    ),
+                    1.96 *
+                        sqrt(
+                            n_obs^2 * sigma^2 + n_obs * psi_inv * (psi_inv - 1)
+                        ),
                 n_obs
             )),
             ci_u = round(
                 n_obs *
                     psi_inv +
-                    1.96 * sqrt(
-                        n_obs^2 * sigma^2 +
-                            n_obs * psi_inv * (psi_inv - 1)
-                    )
+                    1.96 *
+                        sqrt(
+                            n_obs^2 * sigma^2 + n_obs * psi_inv * (psi_inv - 1)
+                        )
             )
         ) |>
         select(listpair, n, sigma_n, ci_l, ci_u)
@@ -147,6 +150,8 @@ estimate_no_covariates <- function(data, n_lists) {
 #' @param n_lists The number of capture lists.
 #' @param funcname The function used for nuisance parameter estimation.
 #' @param seed The random seed for reproducibility (default is NULL).
+#' @param diagnostics Controls GLM fit diagnostics: "quiet", "warning", or
+#' "verbose".
 #' @return A list containing the estimation results and the total population
 #' size.
 #'
@@ -158,7 +163,8 @@ estimate_with_covariates <- function(
     func,
     nfolds,
     margin,
-    seed = NULL
+    seed = NULL,
+    diagnostics = "quiet"
 ) {
     ############################################################################
     # Crossfold Setup
@@ -196,23 +202,25 @@ estimate_with_covariates <- function(
         margin = margin,
         n_lists = n_lists,
         n = n_obs,
-        func = func
-    )
+        func = func,
+        diagnostics = diagnostics
+    ) |>
+        compact()
 
     estimates <- summaries |>
         dplyr::mutate(
             sigma = sqrt(n_obs * var),
             n = round(n_obs * psi_inverse),
             sigma_n = sqrt(
-                n_obs^2 * var +
-                    n_obs * psi_inverse * (psi_inverse - 1)
+                n_obs^2 * var + n_obs * psi_inverse * (psi_inverse - 1)
             ),
             ci_l = round(pmax(
                 n_obs *
                     psi_inverse -
                     1.96 *
                         sqrt(
-                            n_obs^2 * var +
+                            n_obs^2 *
+                                var +
                                 n_obs * psi_inverse * (psi_inverse - 1)
                         ),
                 n_obs
@@ -222,7 +230,8 @@ estimate_with_covariates <- function(
                     psi_inverse +
                     1.96 *
                         sqrt(
-                            n_obs^2 * var +
+                            n_obs^2 *
+                                var +
                                 n_obs * psi_inverse * (psi_inverse - 1)
                         )
             )
@@ -239,6 +248,7 @@ estimate_with_covariates <- function(
 #' (e.g., "1,2").
 #' @param folds A list of cross-validation folds, each containing training and
 #' test sets.
+#' @param diagnostics Controls GLM fit diagnostics.
 #' @param ... Additional arguments passed to the `run_fold` function.
 #' @return A tibble summarizing the capture probability and variance for the
 #' specified pair of capture lists.
@@ -246,7 +256,7 @@ estimate_with_covariates <- function(
 #' @importFrom purrr map map_dbl compact
 #' @importFrom tibble tibble
 #' @keywords internal
-summarize_pair <- function(listpair, folds, ...) {
+summarize_pair <- function(listpair, folds, diagnostics = "quiet", ...) {
     parts <- as.integer(strsplit(listpair, ",", fixed = TRUE)[[1]])
 
     fold_results <- map(
@@ -254,9 +264,15 @@ summarize_pair <- function(listpair, folds, ...) {
         run_fold,
         j = parts[[1]],
         k = parts[[2]],
+        diagnostics = diagnostics,
         ...
     ) |>
         compact()
+
+    if (length(fold_results) == 0) {
+        warning("No fold results available for list pair: ", listpair)
+        return(NULL)
+    }
 
     summary_table <- tibble(
         listpair = listpair,

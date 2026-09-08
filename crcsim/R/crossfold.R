@@ -4,7 +4,7 @@
 # Created Date: 2026-08-28                                                     #
 # Author: Matthew Carroll                                                      #
 # -----                                                                        #
-# Last Modified: 2026-08-28                                                    #
+# Last Modified: 2026-09-01                                                    #
 # Modified By: Matthew Carroll                                                 #
 # -----                                                                        #
 # Copyright (c) 2026 Syndemics Lab at Boston Medical Center                    #
@@ -52,6 +52,7 @@ build_folds <- function(fold, data, nfolds, permutation) {
 #' @param n The total number of observations.
 #' @param nuisance_estimation_func The function used for nuisance parameter
 #' estimation.
+#' @param diagnostics Controls GLM fit diagnostics.
 #' @param ... Additional arguments passed to the nuisance estimation function.
 #' @return A list containing the capture probability and its variance for the
 #' current fold.
@@ -65,14 +66,30 @@ run_fold <- function(
     margin,
     n_lists,
     n,
-    func
+    func,
+    diagnostics = "quiet"
 ) {
     train <- fold_split[["train"]]
     test <- fold_split[["test"]]
-    test_list_overlap(train[[j]], train[[k]], margin)
+    test_list_overlap(
+        train[[j]],
+        train[[k]],
+        margin,
+        l1_name = paste0("List ", j),
+        l2_name = paste0("List ", k)
+    )
 
     nuisance_functions <- try(
-        nuisance_estimation(func, train, test, n_lists, j, k, margin),
+        nuisance_estimation(
+            func,
+            train,
+            test,
+            n_lists,
+            j,
+            k,
+            margin,
+            diagnostics
+        ),
         silent = TRUE
     )
 

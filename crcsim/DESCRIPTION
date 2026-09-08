@@ -18,6 +18,7 @@ Imports:
     future,
     future.apply,
     MASS,
+    mgcv,
     purrr,
     rlang,
     tibble

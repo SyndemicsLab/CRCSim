@@ -57,7 +57,28 @@ test_that("qhat_logit handles repeated person-level rows", {
     expect_length(result$q_1, 3)
 })
 
-test_that("qhat_logit returns NULL when a GLM cannot be fitted", {
+test_that("qhat_logit is quiet by default when a GLM cannot be fitted", {
+    train <- data.frame(
+        capture_1 = c("no", "yes", "no"),
+        capture_2 = c("no", "no", "yes"),
+        covariate = c(0, 1, 0)
+    )
+    test <- train
+
+    expect_silent(
+        result <- crcsim:::qhat_logit(
+            train,
+            test,
+            n_lists = 2,
+            j = 1,
+            k = 2,
+            margin = 0.05
+        )
+    )
+    expect_null(result)
+})
+
+test_that("qhat_logit reports labeled GLM diagnostics on request", {
     train <- data.frame(
         capture_1 = c("no", "yes", "no"),
         capture_2 = c("no", "no", "yes"),
@@ -72,9 +93,10 @@ test_that("qhat_logit returns NULL when a GLM cannot be fitted", {
             n_lists = 2,
             j = 1,
             k = 2,
-            margin = 0.05
+            margin = 0.05,
+            diagnostics = "warning"
         ),
-        "One or more GLM fits failed"
+        "GLM nuisance diagnostics.*d1.*d2"
     )
     expect_null(result)
 })

@@ -4,7 +4,7 @@
 # Created Date: 2026-08-28                                                     #
 # Author: Matthew Carroll                                                      #
 # -----                                                                        #
-# Last Modified: 2026-08-28                                                    #
+# Last Modified: 2026-09-01                                                    #
 # Modified By: Matthew Carroll                                                 #
 # -----                                                                        #
 # Copyright (c) 2026 Syndemics Lab at Boston Medical Center                    #
@@ -41,16 +41,25 @@ build_listpairs <- function(n_lists) {
 #' @return NULL. A warning is issued if the overlap is less than the margin.
 #'
 #' @export
-test_list_overlap <- function(l1, l2, margin) {
-    if (mean(l1 * l2) < margin) {
-        warning(paste0(
-            "Warning: Overlap between the lists ",
-            l1,
+test_list_overlap <- function(l1, l2, margin, l1_name = NULL, l2_name = NULL) {
+    overlap <- mean(l1 * l2)
+    if (overlap < margin) {
+        error_prefix <- paste0(
+            "Overlap between ",
+            ifelse(is.null(l1_name), "the first list", l1_name)
+        )
+        error_prefix <- paste0(
+            error_prefix,
             " and ",
-            l2,
-            " is less than ",
-            margin,
-            ".\n"
+            ifelse(is.null(l2_name), "the second list", l2_name),
+            " is "
+        )
+        warning(paste0(
+            error_prefix,
+            signif(overlap, 3),
+            " less than the threshold ",
+            signif(margin, 3),
+            "."
         ))
     }
     return(NULL)

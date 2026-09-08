@@ -4,7 +4,7 @@
 # Created Date: 2026-08-27                                                     #
 # Author: Matthew Carroll                                                      #
 # -----                                                                        #
-# Last Modified: 2026-08-27                                                    #
+# Last Modified: 2026-09-03                                                    #
 # Modified By: Matthew Carroll                                                 #
 # -----                                                                        #
 # Copyright (c) 2026 Syndemics Lab at Boston Medical Center                    #
@@ -26,6 +26,6 @@
 plugin_estimator <- function(q_1, q_2, q_12) {
     gamma_hat <- conditional_capture(q_1, q_2, q_12)
     gamma_inv_hat <- 1 / gamma_hat
-    psi_inverse_hat <- mean(gamma_inv_hat)
+    psi_inverse_hat <- mean(gamma_inv_hat, na.rm = TRUE)
     return(psi_inverse_hat)
 }

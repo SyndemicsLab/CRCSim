@@ -1,10 +1,10 @@
 ################################################################################
 # File: crc.R                                                                  #
-# Project: crc-sim                                                             #
+# Project: crcsim                                                              #
 # Created Date: 2026-02-23                                                     #
 # Author: Matthew Carroll                                                      #
 # -----                                                                        #
-# Last Modified: 2026-06-16                                                    #
+# Last Modified: 2026-09-04                                                    #
 # Modified By: Matthew Carroll                                                 #
 # -----                                                                        #
 # Copyright (c) 2026 Syndemics Lab at Boston Medical Center                    #
@@ -28,7 +28,7 @@
 #' in options.R, such as AICOptions, StepwiseOptions, or EstimatorOptions.
 #'
 #' @export
-crc <- function(model_data, opts) {
+crc <- function(model_data, opts, seed = NULL, diagnostics = "quiet") {
     if (inherits(opts, "FrequencyOptions")) {
         if (inherits(opts, "AICOptions")) {
             return(aic_selection(model_data, opts))
@@ -38,7 +38,7 @@ crc <- function(model_data, opts) {
             stop("Invalid FrequencyOptions object provided.")
         }
     } else if (inherits(opts, "EstimatorOptions")) {
-        return(row_level_estimation(model_data, opts))
+        return(row_level_estimation(model_data, opts, seed, diagnostics))
     }
     stop("Invalid options object provided.")
 }
